@@ -1,7 +1,20 @@
-version: '3' # composeファイルのバーション指定
+version: '3'
+
 services:
-  app: # service名
-    build: . # ビルドに使用するDockerfileがあるディレクトリ指定
-    tty: true # コンテナの起動永続化
+  # MySQL
+  db:
+    image: mysql:latest
+    container_name: mysql_host
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: test_database
+      MYSQL_USER: docker
+      MYSQL_PASSWORD: docker
+      TZ: 'Asia/Tokyo'
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
-      - .:/go/src/work # マウントディレクトリ指定
+    - ./docker/db/data:/var/lib/mysql
+    - ./docker/db/my.cnf:/etc/mysql/conf.d/my.cnf
+    - ./docker/db/sql:/docker-entrypoint-initdb.d
+    ports:
+    - 3306:3306
